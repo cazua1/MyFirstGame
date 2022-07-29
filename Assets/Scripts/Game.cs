@@ -9,6 +9,7 @@ public class Game : MonoBehaviour
     [SerializeField] private GameObject _pauseScreen;    
 
     private Camera _camera;
+    private bool _isPaused = false;
       
     private void Awake()
     {
@@ -26,7 +27,23 @@ public class Game : MonoBehaviour
     {
         _player.GameRestart -= OnGameRestart;
         _pauseButton.onClick.RemoveListener(OnPauseButtonClick);
-    }   
+    }
+
+    private void OnGUI()
+    {
+        if (_isPaused)
+            GUI.Label(new Rect(100, 100, 50, 30), "Game paused");
+    }
+
+    private void OnApplicationFocus(bool hasFocus)
+    {
+        _isPaused = !hasFocus;
+    }
+
+    private void OnApplicationPause(bool pauseStatus)
+    {
+        _isPaused = pauseStatus;
+    }
 
     private void OnPauseButtonClick()
     {
