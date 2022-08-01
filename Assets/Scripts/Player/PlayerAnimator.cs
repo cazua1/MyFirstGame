@@ -10,6 +10,4 @@ public static class PlayerAnimator
         public const string Electrify = "Electrify";
         public const string Disappear = "Disappear";
     }
-}
-
-    
+}    
