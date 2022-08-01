@@ -6,14 +6,13 @@ public class Game : MonoBehaviour
     [SerializeField] private Player _player;
     [SerializeField] private SectionslBuilder _builder;
     [SerializeField] private Button _pauseButton;
-    [SerializeField] private GameObject _pauseScreen;    
-
-    private Camera _camera;
+    [SerializeField] private GameObject _pauseScreen;
+    [SerializeField] private PlayerTracker _camera;
+    
     private bool _isPaused = false;
       
     private void Awake()
-    {
-        _camera = Camera.main;
+    {        
         _pauseScreen.SetActive(false);
     }
 
@@ -55,6 +54,6 @@ public class Game : MonoBehaviour
     {
         _player.ResetPlayer();
         _builder.ResetSection();   
-        _camera.GetComponent<PlayerTracker>().ReserPosition();
+        _camera.ReserPosition();
     }
 }

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PositionCorrectorOnWall : MonoBehaviour
 {
+    private const float PositionX = 0.3f;
+    private const float PositionY = 1f;
+
     private PlayerMover _mover;
 
     private void Start()
@@ -15,13 +18,13 @@ public class PositionCorrectorOnWall : MonoBehaviour
     {
         if (collision.GetComponent<TopOfTheWall>())
         {
-            if (_mover.FaceRight)
+            if (_mover.MovesToTheRight)
             {
-                transform.Translate(-0.3f, -1f, 0);
+                transform.Translate(-PositionX, -PositionY, 0);
             }
-            else if (_mover.FaceRight == false)
+            else
             {
-                transform.Translate(0.3f, -1f, 0);
+                transform.Translate(PositionX, -PositionY, 0);
             }
         }
     }

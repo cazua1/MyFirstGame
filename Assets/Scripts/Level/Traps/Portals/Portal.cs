@@ -13,10 +13,10 @@ public class Portal : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.TryGetComponent(out Player player))
+        if (collision.TryGetComponent(out PlayerMover player))
         {
-            player.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
-            player.gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(_outputSpeedX, _outputSpeedY), ForceMode2D.Impulse);
+            player.Rigidbody2D.velocity = new Vector2(0, 0);
+            player.Rigidbody2D.AddForce(new Vector2(_outputSpeedX, _outputSpeedY), ForceMode2D.Impulse);
         }
     }    
 }

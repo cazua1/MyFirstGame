@@ -2,26 +2,26 @@ using UnityEngine;
 
 public class PlayerTeleport : MonoBehaviour
 {
-    private GameObject _currentPortal;
+    private Portal _currentPortal;
     
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.TryGetComponent(out Portal portal))
         {
-            _currentPortal = portal.gameObject;
+            _currentPortal = portal;
         }
 
         if (_currentPortal != null)
         {
-            transform.position = _currentPortal.GetComponent<Portal>().GetDestination().position;                      
+            transform.position = portal.GetDestination().position;                      
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.TryGetComponent(out Portal teleporter))
+        if (collision.TryGetComponent(out Portal portal))
         {
-            if (teleporter.gameObject == _currentPortal)
+            if (portal == _currentPortal)
             {
                 _currentPortal = null;                               
             }

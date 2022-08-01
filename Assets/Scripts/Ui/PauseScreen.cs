@@ -7,16 +7,10 @@ public class PauseScreen : MonoBehaviour
     [SerializeField] private Button _playButton;
     [SerializeField] private Button _exitButton;
     [SerializeField] private CanvasGroup _canvasGroup;
-    [SerializeField] private GameObject _builder;
+    [SerializeField] private SectionslBuilder _builder;
     [SerializeField] private Player _player;
-
-    private Camera _camera;
-
-    private void Awake()
-    {
-        _camera = Camera.main;        
-    }
-
+    [SerializeField] private PlayerTracker _camera;
+    
     private void OnEnable()
     {
         _restartButton.onClick.AddListener(OnRestartButtonClick);
@@ -33,9 +27,9 @@ public class PauseScreen : MonoBehaviour
 
     private void OnRestartButtonClick()
     {
-        _builder.GetComponent<SectionslBuilder>().ResetLevel();
+        _builder.ResetLevel();
         _player.ResetPlayer();
-        _camera.GetComponent<PlayerTracker>().ReserPosition();
+        _camera.ReserPosition();
         Time.timeScale = 1;
         gameObject.SetActive(false);
     }

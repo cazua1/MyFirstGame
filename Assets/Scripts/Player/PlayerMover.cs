@@ -18,11 +18,12 @@ public class PlayerMover : MonoBehaviour
     private Rigidbody2D _rigidbody2D;
     private BoxCollider2D _boxCollider2D;    
     private Animator _animator;
-    private bool _faceRight;
+    private bool _movesToTheRight;
     private int _jumpCounter;
 
     public Transform StartPosition => _startPosition;
-    public bool FaceRight => _faceRight;
+    public bool MovesToTheRight => _movesToTheRight;
+    public Rigidbody2D Rigidbody2D => _rigidbody2D;
    
     private void Awake()
     {
@@ -36,7 +37,7 @@ public class PlayerMover : MonoBehaviour
         ResetPosition();
         _rigidbody2D.gravityScale = 1.5f;
         _jumpCounter = 0;
-        _faceRight = true;        
+        _movesToTheRight = true;        
     }
 
     private void Update()
@@ -46,21 +47,17 @@ public class PlayerMover : MonoBehaviour
         WallJump();
         DoubleJump();
 
-        if (IsGrounded())
-        {
-            _animator.SetBool(PlayerAnimator.States.Idle, true);
-        }
-        else
-        {
-            _animator.SetBool(PlayerAnimator.States.Idle, false);
-        }        
+        if (IsGrounded())        
+            _animator.SetBool(PlayerAnimator.States.Idle, true);        
+        else        
+            _animator.SetBool(PlayerAnimator.States.Idle, false);                
     }
 
     public void ResetPosition()
     {
         transform.position = _startPosition.position;        
         _rigidbody2D.velocity = Vector2.zero;
-        _faceRight = true;
+        _movesToTheRight = true;
     }    
 
     private void Jump(float x, float y)
@@ -74,24 +71,12 @@ public class PlayerMover : MonoBehaviour
 
     private void Jump()
     {
-        if (Input.GetMouseButtonDown(0) && IsGrounded() && EventSystem.current.IsPointerOverGameObject(0) == false)
-        {
-            if (_faceRight)
-            {
-                Jump(_jumpLenght, _jumpHeight);
-            }
-
-            else
-            {
-                Jump(-_jumpLenght, _jumpHeight);
-            }
-        }
-
-        if (Input.GetMouseButtonUp(0) && _rigidbody2D.velocity.y > 0)
-        {
-            _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x / _jumpÑoefficient, _rigidbody2D.velocity.y / _jumpÑoefficient);
-        }
-    }
+        if (Input.GetMouseButtonDown(0) && IsGrounded() && EventSystem.current.IsPointerOverGameObject(0) == false)        
+            JumpForward();
+        
+        if (Input.GetMouseButtonUp(0) && _rigidbody2D.velocity.y > 0)        
+            _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x / _jumpÑoefficient, _rigidbody2D.velocity.y / _jumpÑoefficient);        
+    }    
 
     private void WallJump()
     {
@@ -104,14 +89,7 @@ public class PlayerMover : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject(0) == false)
             {
-                if (_faceRight)
-                {
-                    Jump(-_jumpLenght, _jumpHeight);
-                }
-                else
-                {
-                    Jump(_jumpLenght, _jumpHeight);
-                }
+                JumpBack();
             }
         }
         else
@@ -126,16 +104,24 @@ public class PlayerMover : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && IsGrounded() == false && OnWall() == false && _jumpCounter == 1 && EventSystem.current.IsPointerOverGameObject(0) == false)
         {
             _animator.SetTrigger(PlayerAnimator.States.Salto);
-
-            if (_faceRight)
-            {
-                Jump(-_jumpLenght, _jumpHeight);
-            }
-            else
-            {
-                Jump(_jumpLenght, _jumpHeight);
-            }                       
+            JumpBack();
         }        
+    }    
+
+    private void JumpForward()
+    {
+        if (_movesToTheRight)        
+            Jump(_jumpLenght, _jumpHeight);
+        else        
+            Jump(-_jumpLenght, _jumpHeight);        
+    }
+
+    private void JumpBack()
+    {
+        if (_movesToTheRight)        
+            Jump(-_jumpLenght, _jumpHeight);        
+        else        
+            Jump(_jumpLenght, _jumpHeight);        
     }
 
     private void Flip()
@@ -145,13 +131,13 @@ public class PlayerMover : MonoBehaviour
         if (_rigidbody2D.velocity.x > minOffsetX)
         {
             transform.localScale = new Vector2(1, 1);
-            _faceRight = true;            
+            _movesToTheRight = true;            
         }
                                
         else if (_rigidbody2D.velocity.x < -minOffsetX)
         {
             transform.localScale = new Vector2(-1, 1);
-            _faceRight = false;            
+            _movesToTheRight = false;            
         }                   
     }    
     
