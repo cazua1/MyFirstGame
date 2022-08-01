@@ -37,7 +37,7 @@ public class ObjectsPool : MonoBehaviour
             spawned.SetActive(false);
             _pool.Add(spawned);            
         }
-        _pool = _pool.OrderBy(item => Guid.NewGuid()).ToList();
+        _pool =_pool.OrderBy(item => Guid.NewGuid()).ToList();
     }
     
     protected bool TryGetObject(out GameObject result)
@@ -62,5 +62,5 @@ public class ObjectsPool : MonoBehaviour
                 }
             }
         }
-    }
+    }    
 }

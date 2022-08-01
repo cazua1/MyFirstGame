@@ -65,23 +65,26 @@ public class PlayerMover : MonoBehaviour
 
     private void Jump(float x, float y)
     {
+        _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, 0);
         _rigidbody2D.AddForce(new Vector2(x, y), ForceMode2D.Impulse);
-        PlayJumpEffect();
+        _animator.SetBool(PlayerAnimator.States.Jump, true);
+        _jumpEffect.Play();
+        _jumpCounter++;
     }
 
     private void Jump()
     {
-        if (Input.GetMouseButtonDown(0) && IsGrounded() && _faceRight && EventSystem.current.IsPointerOverGameObject(0) == false)
+        if (Input.GetMouseButtonDown(0) && IsGrounded() && EventSystem.current.IsPointerOverGameObject(0) == false)
         {
-            Jump(_jumpLenght, _jumpHeight);
-            _animator.SetTrigger(PlayerAnimator.States.Jump);
-            _jumpCounter++;
-        }
-        else if (Input.GetMouseButtonDown(0) && IsGrounded() && _faceRight == false && EventSystem.current.IsPointerOverGameObject(0) == false)
-        {
-            Jump(-_jumpLenght, _jumpHeight);
-            _animator.SetTrigger(PlayerAnimator.States.Jump);
-            _jumpCounter++;
+            if (_faceRight)
+            {
+                Jump(_jumpLenght, _jumpHeight);
+            }
+
+            else
+            {
+                Jump(-_jumpLenght, _jumpHeight);
+            }
         }
 
         if (Input.GetMouseButtonUp(0) && _rigidbody2D.velocity.y > 0)
@@ -99,19 +102,16 @@ public class PlayerMover : MonoBehaviour
             _jumpCounter = 0;
             _animator.SetBool(PlayerAnimator.States.Slide, true);
 
-            if (Input.GetMouseButtonDown(0) && _faceRight && EventSystem.current.IsPointerOverGameObject(0) == false)
+            if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject(0) == false)
             {
-                ResetVelocityOfFall();
-                Jump(-_jumpLenght, _jumpHeight);
-                _animator.SetTrigger(PlayerAnimator.States.Jump);
-                _jumpCounter++;
-            }
-            else if (Input.GetMouseButtonDown(0) && _faceRight == false && EventSystem.current.IsPointerOverGameObject(0) == false)
-            {
-                ResetVelocityOfFall();
-                Jump(_jumpLenght, _jumpHeight);
-                _animator.SetTrigger(PlayerAnimator.States.Jump);
-                _jumpCounter++;
+                if (_faceRight)
+                {
+                    Jump(-_jumpLenght, _jumpHeight);
+                }
+                else
+                {
+                    Jump(_jumpLenght, _jumpHeight);
+                }
             }
         }
         else
@@ -123,56 +123,51 @@ public class PlayerMover : MonoBehaviour
 
     private void DoubleJump()
     {
-        if (Input.GetMouseButtonDown(0) && IsGrounded() == false && OnWall() == false && _faceRight && _jumpCounter == 1 && EventSystem.current.IsPointerOverGameObject(0) == false)
+        if (Input.GetMouseButtonDown(0) && IsGrounded() == false && OnWall() == false && _jumpCounter == 1 && EventSystem.current.IsPointerOverGameObject(0) == false)
         {
-            ResetVelocityOfFall();
-            Jump(-_jumpLenght, _jumpHeight);
             _animator.SetTrigger(PlayerAnimator.States.Salto);
-            _jumpCounter++;
-        }
-        else if (Input.GetMouseButtonDown(0) && IsGrounded() == false && OnWall() == false && _faceRight == false && _jumpCounter == 1 && EventSystem.current.IsPointerOverGameObject(0) == false)
-        {
-            ResetVelocityOfFall();
-            Jump(_jumpLenght, _jumpHeight);
-            _animator.SetTrigger(PlayerAnimator.States.Salto);
-            _jumpCounter++;
-        }
+
+            if (_faceRight)
+            {
+                Jump(-_jumpLenght, _jumpHeight);
+            }
+            else
+            {
+                Jump(_jumpLenght, _jumpHeight);
+            }                       
+        }        
     }
 
     private void Flip()
     {
-        if (_rigidbody2D.velocity.x > 0.01)
+        float minOffsetX = 0.01f;
+
+        if (_rigidbody2D.velocity.x > minOffsetX)
         {
             transform.localScale = new Vector2(1, 1);
             _faceRight = true;            
         }
                                
-        else if (_rigidbody2D.velocity.x < -0.01)
+        else if (_rigidbody2D.velocity.x < -minOffsetX)
         {
             transform.localScale = new Vector2(-1, 1);
             _faceRight = false;            
         }                   
-    }
-
-    private void PlayJumpEffect()
-    {
-        _jumpEffect.Play();
-    }
-
-    private void ResetVelocityOfFall()
-    {
-        _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, 0);
-    }
+    }    
     
     private bool OnWall()
     {
-        RaycastHit2D raycastHit = Physics2D.BoxCast(_boxCollider2D.bounds.center, _boxCollider2D.bounds.size, 0, new Vector2(transform.localScale.x, 0), 0.1f, _wallLayer);
+        float raycastDistance = 0.1f;
+        float angle = 0f;
+        RaycastHit2D raycastHit = Physics2D.BoxCast(_boxCollider2D.bounds.center, _boxCollider2D.bounds.size, angle, new Vector2(transform.localScale.x, 0), raycastDistance, _wallLayer);
         return raycastHit.collider != null;
     }
 
     private bool IsGrounded()
     {
-        RaycastHit2D raycastHit = Physics2D.BoxCast(_boxCollider2D.bounds.center, _boxCollider2D.bounds.size, 0, Vector2.down, 0.1f, _groundLayer);
+        float raycastDistance = 0.1f;
+        float angle = 0f;
+        RaycastHit2D raycastHit = Physics2D.BoxCast(_boxCollider2D.bounds.center, _boxCollider2D.bounds.size, angle, Vector2.down, raycastDistance, _groundLayer);
         return raycastHit.collider != null;
     }
 }

@@ -5,6 +5,7 @@ public class PlayerTracker : MonoBehaviour
     [SerializeField] private Player _player;
     [SerializeField] private float _speed = 1.5f;
     [SerializeField] private float _yOffset;
+
     private float _maxPositionY = 0;
     private Vector3 _target;    
 

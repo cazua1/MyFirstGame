@@ -27,7 +27,7 @@ public class Distance : MonoBehaviour
     private void Start()
     {
         _bestDistance = PlayerPrefs.GetFloat(DistanceKey);
-        _bestResalt.text = _bestDistance.ToString();        
+        _bestResalt.text = _bestDistance.ToString() + "m";        
     }
 
     private void OnDistanceChanged(float distance)

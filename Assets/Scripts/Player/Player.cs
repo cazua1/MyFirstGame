@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using System;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(PlayerMover))]
@@ -7,8 +8,7 @@ using UnityEngine.Events;
 public class Player : MonoBehaviour
 {
     [SerializeField] private ParticleSystem _bangEffect;
-
-    private Rigidbody2D _rigidbody2D;
+        
     private Animator _animator;
     private PlayerMover _mover;
     private float _distance = 0;
@@ -31,17 +31,18 @@ public class Player : MonoBehaviour
 
     public void CalculatedDistance()
     {
-        var distance = Vector2.Distance(_mover.StartPosition.transform.position, transform.position);
-        var result = Mathf.Round(distance * 10f) * 0.1f;
+        float distance = Vector2.Distance(_mover.StartPosition.transform.position, transform.position);        
+        float result = (float)Math.Round(distance, 1);
 
         if (_distance < result)
             _distance = result;        
     }
 
     public void ResetPlayer()
-    {        
+    {
+        float delay = 1f;
         _mover.ResetPosition();        
-        Invoke(nameof(Enable), 0.8f);        
+        Invoke(nameof(Enable), delay);        
     }     
 
     public void Explode()
